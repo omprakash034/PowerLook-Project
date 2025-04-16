@@ -21,6 +21,14 @@ app.use("/", coupanRouter);
 const shoppingBagRouter = require("./routes/ShoppingBagRouter");
 app.use("/", shoppingBagRouter);
 
+const ReviewRouter = require("./routes/ReviewRouter");
+app.use("/", ReviewRouter);
+
+const AddreessRouter = require('./routes/AddressRouter');
+app.use("/", AddreessRouter);
+
+const OrderIteamRouter = require('./routes/OrderIteamRouter');
+app.use("/", OrderIteamRouter);
 
 
 app.listen(7000, () => {

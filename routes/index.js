@@ -17,7 +17,14 @@ router.use("/", coupanRouter);
 const shoppingBagRouter = require('./ShoppingBagRouter');
 router.use("/", shoppingBagRouter);
 
+const ReviewRouter = require('./ReviewRouter');
+router.use("/", ReviewRouter);
 
+const AddreessRouter = require('./AddressRouter');
+router.use("./", AddreessRouter);
+
+const OrderIteamRouter = require('./OrderIteamRouter');
+router.use("/", OrderIteamRouter);
 
 
 module.exports = router; 

@@ -7,7 +7,7 @@ const AddressController = require('../Controller/AddreessController');
 router.get("/getAddress", AddressController.getAddress );
 router.get("/getAllAddress", AddressController.getAllAddress);
 router.post("/addAddress", AddressController.postAddress);
-router.put("/updateAddress/:id", AddressController.updateAddress);
+router.put("/updateAddress/:userId", AddressController.updateAddress);
 router.delete("/deleteAddress/:id", AddressController.deleteAddress);
 
 

@@ -3,32 +3,40 @@ const app = express();
 
 const mongoose = require("mongoose");
 require('./DBConnection/DBConnection');
+
 app.use(express.json()); 
 
+const {validateMiddleware} = require('./MiddleWare/validateMiddleware')
 
 const ProductRouter = require("./routes/ProductRouter");
-app.use("/", ProductRouter);
+app.use("/product", ProductRouter);
 
 const wishListRouter = require("./routes/WishListRouter");
-app.use("/", wishListRouter);
+app.use("/wishList",validateMiddleware, wishListRouter);
 
-const userRouter = require("./routes/UserRouter");
-app.use("/", userRouter);
+const authRouter = require("./routes/AuthRouter");
+app.use("/auth", authRouter);
+
+const UserRouter = require('./routes/UserRouter');
+app.use("/user",validateMiddleware, UserRouter);
 
 const coupanRouter = require("./routes/CoupanRouter");
-app.use("/", coupanRouter);
+app.use("/coupan", coupanRouter);
 
 const shoppingBagRouter = require("./routes/ShoppingBagRouter");
-app.use("/", shoppingBagRouter);
+app.use("/shoppingBag", validateMiddleware, shoppingBagRouter);
 
 const ReviewRouter = require("./routes/ReviewRouter");
-app.use("/", ReviewRouter);
+app.use("/review", ReviewRouter);
 
 const AddreessRouter = require('./routes/AddressRouter');
-app.use("/", AddreessRouter);
+app.use("/address", validateMiddleware,AddreessRouter);
 
 const OrderIteamRouter = require('./routes/OrderIteamRouter');
-app.use("/", OrderIteamRouter);
+app.use("/orderIteam",validateMiddleware, OrderIteamRouter);
+
+const Order = require('./routes/OrderRouter');
+app.use("/order",validateMiddleware, Order);
 
 
 app.listen(7000, () => {

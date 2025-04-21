@@ -7,9 +7,14 @@ exports.getShoppingBag = (req, res) => {
 };
 
 exports.getAllShoppingBag =async (req, res) => {
-  const Bag = await shoppingBag.find();
+  const id = req.id;
+  console.log(id);
+  const Bag = await shoppingBag.find({userId : id });
+
+  console.log(Bag);
+
   res.status(200).json({
-    status : "succsessfully", 
+    status : "success", 
     message : "fecth data successfully",
     data : Bag 
   })
@@ -17,7 +22,9 @@ exports.getAllShoppingBag =async (req, res) => {
 
 exports.postShoppingBag = async (req, res) => {
   try {
-    const {productId, productName,  productImage,  productSize,  productColor, quantity, price, stock, userId} = req.body;
+    const userId = req.id
+
+    const {productId, productName,  productImage,  productSize,  productColor, quantity, price, stock} = req.body;
 
     if(!productId ||
        !productName ||
@@ -26,8 +33,7 @@ exports.postShoppingBag = async (req, res) => {
        !productColor ||
        !quantity ||
        !price ||
-       !stock || 
-       !userId)
+       !stock)
       {
        res.status(400).jason({message: "product is invalid"});
       }
@@ -45,7 +51,7 @@ exports.postShoppingBag = async (req, res) => {
   
 };
 
-exports.updateShoppingBag = async (req, res) => {
+/*exports.updateShoppingBag = async (req, res) => {
   try {
     const {id} = req.params;
 
@@ -64,7 +70,7 @@ exports.updateShoppingBag = async (req, res) => {
     res.status(500).json({message: "internal server error"});
   }
   
-};
+};*/
 
 
 exports.deleteShoppingBag = async (req, res) => {

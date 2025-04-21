@@ -9,7 +9,8 @@ exports.getWishList =  (req, res) => {
 };
 
 exports.getProductWishList = async (req, res) => {
-  const WishList = await wishList.find();
+  const id = req.id
+  const WishList = await wishList.find({userId : id });
   res.status(200).json({
     status : "sucess",
     message : "WishList fetch successfully",
@@ -21,7 +22,10 @@ exports.getProductWishList = async (req, res) => {
 
 exports.addPoductWishList = async (req, res) => {
   try {
-    const{ productName,productImage,productDescription,price,category_name, category_id,size, retail_price, stock, quantity, user_id}= req.body;
+    const userId = req.id;
+    
+    console.log(userId);
+    const{ productName,productImage,productDescription,price,category_name, category_id,size, retail_price, stock, quantity}= req.body;
 
     if(!productName ||
       !productImage ||
@@ -32,12 +36,12 @@ exports.addPoductWishList = async (req, res) => {
       !size ||
       !retail_price ||
       !stock ||
-      !quantity ||
-      !user_id){
+      !quantity){
         return res.status(400).json({message: "This product data is not valid"});
       }
 
-      const newWishList = new wishList({productName,productImage,productDescription,price,category_name, category_id,size, retail_price, stock, quantity, user_id});
+      const newWishList = new wishList({productName,productImage,productDescription,price,category_name, category_id,size, retail_price, stock, quantity, userId});
+      console.log(newWishList)
       await newWishList.save();
       res.status(201).json({message:"wishlist created succesfully", wishList: newWishList});
     
@@ -49,6 +53,7 @@ exports.addPoductWishList = async (req, res) => {
 
 exports.deleteWishList = async(req, res) => {
   try {
+  
     const {id} = req.params;
     if(!mongoose.Types.ObjectId.isValid(id)){
     return res.status(400).json({message:"invalid wishlist Id"});

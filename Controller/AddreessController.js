@@ -8,7 +8,8 @@ exports.getAddress = (req, res) => {
 };
 
 exports.getAllAddress = async (req, res) => {
-  const Address = await address.find();
+  const id = req.id;
+  const Address = await address.find({userId: id });
   res.status(200).json({
     status:"success",
     message: "Address Fetch Successfully",
@@ -19,6 +20,7 @@ exports.getAllAddress = async (req, res) => {
 exports.postAddress = async (req, res) => {
  try 
  {
+   const userId = req.id;
   const {firstName, lastName, email, dob,  mobile_number,  alternate_number, state, postcode, address1,  address2, landmark, instruction, addressType} = req.body;
   
   if(!firstName ||
@@ -38,7 +40,7 @@ exports.postAddress = async (req, res) => {
       return res.status(400).json({message: "Adress Fileds Are Invalid"})
     }
     
-    const newAddress = new address ({firstName, lastName, email, dob,  mobile_number,  alternate_number, state, postcode, address1,  address2, landmark, instruction, addressType})
+    const newAddress = new address ({firstName, lastName, email, dob,  mobile_number,  alternate_number, state, postcode, address1,  address2, landmark, instruction, addressType, userId})
 
     if(!newAddress) 
     {
@@ -61,11 +63,31 @@ exports.postAddress = async (req, res) => {
 exports.updateAddress = async (req, res) => {
   try 
   {
-    const {id} = req.params;
+    const userId = req.id;
  
     const {firstName, lastName, email, dob,  mobile_number,  alternate_number, state, postcode, address1,  address2, landmark, instruction, addressType} = req.body;
 
-    const updateAddress = await address.findByIdAndUpdate(id,{firstName, lastName, email, dob,  mobile_number,  alternate_number, state, postcode, address1,  address2, landmark, instruction, addressType});
+    const updateFields = {
+    ...(firstName && {firstName}),
+    ...( lastName && { lastName}),
+    ...(email && {email}),
+    ...( dob && { dob}),
+    ...( mobile_number&& {mobile_number}),
+    ...(alternate_number && {alternate_number}),
+    ...(state && {state}),
+    ...( postcode&& {postcode}),
+    ...(address1 && {address1}),
+    ...(address2 && {address2}),
+    ...(landmark && {landmark}),
+    ...(instruction && {instruction}),
+    ...(addressType && {addressType}),
+ };
+
+  const updateAddress = await address.findOneAndUpdate(
+        { userId },
+        updateFields,
+        { new: true }
+      );
 
     if(!updateAddress)
     {

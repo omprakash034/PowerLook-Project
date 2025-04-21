@@ -11,7 +11,9 @@ const wishListSchema = new mongoose.Schema({
   retail_price: {type: String, required: true},
   stock: {type: String, required: true},
   quantity: {type: Number, required: true},
-  user_id: {type: Number, required: true}
+   userId: {  type: mongoose.Schema.Types.ObjectId,
+          ref: 'User'
+          },
 })
 
 const WishList = mongoose.model("wishList", wishListSchema)

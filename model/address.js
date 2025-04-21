@@ -19,6 +19,9 @@ const addressSchema = mongoose.Schema({
     enum : ['HOME','OFFICE_COMMERCIAL'],
     required : true
   },
+    userId: {  type: mongoose.Schema.Types.ObjectId,
+          ref: 'User'
+          },
 
 
 

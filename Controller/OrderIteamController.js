@@ -10,7 +10,8 @@ exports.getOrderIteam = (req, res) =>
 exports.getAllOrderIteam = async (req, res) => {
   try 
   {
-    const Iteams = await orderIteam.find();
+    const id = req.id
+    const Iteams = await orderIteam.find({userId : id });
   if(!Iteams)
     {
       res.status(404).json({message: "All Iteam Are Not Found "});
@@ -37,6 +38,7 @@ exports.getAllOrderIteam = async (req, res) => {
 exports.postOrderIteam = async (req, res) => {
   try
   {
+    const userId = req.id;
     const {productId, productName, quantity, productSize, productColor, price, category, image, description} = req.body;
 
     if(!productId ||
@@ -52,7 +54,7 @@ exports.postOrderIteam = async (req, res) => {
       return res.status(400).json({message: "Order Iteam Invalid"});
     }
 
-    const newOrderIteam = new orderIteam({productId, productName, quantity, productSize, productColor, price, category, image, description});
+    const newOrderIteam = new orderIteam({productId, productName, quantity, productSize, productColor, price, category, image, description, userId});
    
     if(!newOrderIteam) return res.status(404).json({message: "OderIteam is not Found"});
 
@@ -66,7 +68,7 @@ exports.postOrderIteam = async (req, res) => {
 };
 
 
-exports.updateOrderIteam = async (req, res) => {
+/*exports.updateOrderIteam = async (req, res) => {
 try
 {  
   const {id} = req.params;
@@ -85,7 +87,7 @@ catch(error)
   console.log(error);
   res.status(500).json({message: "internal server error"});
 }
-};
+}; */
 
 exports.deleteOrderIteam = async (req, res) => {
 try

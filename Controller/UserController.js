@@ -1,109 +1,72 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const user = require('../model/user');
+const user = require('../model/users');
 
-const nodemailer = require('nodemailer');
+exports.getUser = (req, res) => {
+res.send("Get User");
+};
 
-const jwt = require('jsonwebtoken');
+exports.getAllUser = async(req, res) => {
+const User = await user.find();
+res.status(200).json({
+  status: "success",
+  message:"Success Get User", 
+  data: User
+})
+};
 
-const secretKey = 'oejhgjpeoiuhfjhugykrjfkdsl;fkagyLKJFHGEIUGYVGEWIHUGHCJwiuyuftcweffdhgvhfhugh';
+exports.postUser = async(req, res) => {
+try
+{
+  const id = req.id;
+   const currentUser = user.findById(id);
+   console.log(currentUser);
+  
+  const{firstName, lastName, email,  dob,  alt_number,  number,  gender,  role,  address,  createdDate } = req.body;
 
-const emailAndotpMap=new Map();
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'deepakworkholics@gmail.com',
-      pass: 'pmhx eogx zjnj iecd' // use App Password, not your Gmail password
-    }
-  });
-
-exports.getWelcome = async (req,res)=>{
-
-    const name="Deepak Varun";
-    res.status(200).json(" Hello welcome to Powerlook Application ");
-}
-
-exports.requestForOTP = async (req,res)=>{
-    const email = req.params.email;
-
-    const otpC = Math.floor(100000 + Math.random() * 900000);
-
-    console.log("Email--",email," OTP--",otpC);
-    emailAndotpMap.set(email,otpC);
-
-    const mailOptions = {
-        from: 'deepakworkholics@gmail.com',
-        to: email,
-        subject: 'Your OTP Code',
-        text: `Your OTP is: ${otpC}. It will expire in 5 minutes`
-      };
-
-      console.log("Check -111111" , mailOptions);
-
-      try {
-        await transporter.sendMail(mailOptions);
-
-        console.log('OTP sent to email:', email);
-
-        return res.status(200).json({
-            message : "OTP Send To User Email SucessFull"
-        })
-        
-
-      } catch (error) {
-
-        console.error('Error sending email:', error.message);
-
-        return res.status(500).json({
-            message : "Internal Server Error"
-        })
-      }
-}
-
-exports.loginUserAndPassToken = async (req,res)=>{
-
-    const body=req.body;
-    const email = body.email;
-    const otp=body.otp;
-
-    const preOtp = emailAndotpMap.get(email);
-    console.log(preOtp);
-
-    if(otp==preOtp){
-
-           const userDto = {
-            email : email
-           }
-           const newUser = new user(userDto);
-           
-          await  newUser.save();
-
-           const id=newUser._id;
-           console.log(id);
-           
-        const token=generateToken(id);
-        console.log(token);
-
-
-         return res.status(200).json({
-            message : "User Login SuccessFully",
-            "token" : token
-         });
-
-
-    }else{
-        return res.status(400).json({
-            message : "Please Provide a correct email and otp"
-        })
+  if(!firstName ||  
+    !lastName ||
+    !email ||  
+    !dob ||  
+    !alt_number ||  
+    !number || 
+    !gender ||  
+    !role ||  
+    !address ||  
+    !createdDate)
+    {
+      return res.status(400).json({message: "Invalid User Fields"}); 
     }
 
+    const newUser = new user({firstName, lastName, email,  dob,  alt_number,  number,  gender,  role,  address, createdDate})
+
+    if(!newUser) return res.status(404).json({message: "User Not Found"});
+    await newUser.save();
+    res.status(200).json({message: "User is Successfully Added", user: newUser})
 }
+catch(error)
+{
+  return res.status(500).json({ message: "Internal server error" });
+}    
+};
 
 
-const generateToken = (userId) => {
+exports.updateUser = async (req, res) => {
+  try {
+    const id = req.id;
+    const currentUser = user.findById(id);
+    console.log(currentUser);
 
-  const payload = { id: userId }
-    return jwt.sign(payload, secretKey, { expiresIn: '1h' });
-  };
+    const{firstName, lastName, email,  dob,  alt_number,  number,  gender,  role,  address,  createdDate} = req.body;
+     
+    const updateUser = await user.findByIdAndUpdate(id,{firstName, lastName, email,  dob,  alt_number,  number,  gender,  role,  address,  createdDate});
 
+    if(!updateUser)return res.status(404).json({message:"User not Found"});
+
+    await updateUser.save();
+    res.status(200).json({message: "User Is Updated Sucessfully", user: updateUser});
+
+ } catch (error) {
+    res.status(500).json({message:"Internal server error"})
+  }
+}

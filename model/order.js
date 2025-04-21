@@ -4,26 +4,26 @@ const ordersSchema = mongoose.Schema({
 
 
  
-	 userId : { type: Number, required: true },
-   userAddress : { type: String, required: true },
+	 userId: {  type: mongoose.Schema.Types.ObjectId,
+             ref: 'User'
+            },
+    userAddress : { type: String, required: true },
 	 phoneNumber : { type: String, required: true },
-   email : { type: String, required: true },
-	 orderItems :{
+    email : { type: String, required: true },
+	 orderItems :[{
         type : mongoose.Schema.Types.ObjectId,
         ref : 'OrderItems',
-        required : true
-
-     },
+        required : true }],
 	 totalAmount : { type: Number, required: true },
-	 paymentStatus : { type: String, required: true },
-   razorpayOrderId : { type: String, required: true },
-   razorpaySignature : { type: String, required: true },
-	 orderStatus : { type: String, required: true },
-   deliverDate : { type: String, required: true },
+    paymentType:{type : String , required: true},
+	 paymentStatus : { type: String },
+    razorpayOrderId : { type: String},
+    razorpaySignature : { type: String},
+	 orderStatus : { type: String },
 	 deliveryDate : { type: Date },
-	 razorpayPaymentId : { type: String, required: true },
+	 razorpayPaymentId : { type: String},
 
 });
 
-module.exports = mongoose.model('orders',ordersSchem);
+module.exports = mongoose.model('orders', ordersSchema);
 
